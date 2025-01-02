@@ -72,6 +72,7 @@ availableSecrets:
 substitutions:
   _REPO_NAME: "gcp-terraform-module"  # Replace with your repository name
   _BRANCH_NAME: "main"               # Replace with your default branch
+  _HEAD_REPO_URL: "https://github.com/inderanz/gcp-terraform-module"
 
 timeout: "1200s"
 options:
