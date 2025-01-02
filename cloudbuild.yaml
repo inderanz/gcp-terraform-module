@@ -1,0 +1,48 @@
+steps:
+  # Step 1: Check out the repository
+  - name: "gcr.io/cloud-builders/git"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Cloning from GitHub..."
+        git clone https://github.com/inderanz/gcp-terraform-module.git .
+        git checkout $BRANCH_NAME
+
+  # Step 2: Install release-please
+  - name: "node:16"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Installing release-please..."
+        npm install -g release-please
+
+  # Step 3: Generate Release PR
+  - name: "node:16"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Generating Release PR..."
+        release-please github-release-pr \
+          --repo-url=https://github.com/inderanz/gcp-terraform-module.git \
+          --package-name=gcp-terraform-module \
+          --default-branch=$BRANCH_NAME \
+          --token=$GITHUB_TOKEN
+
+  # Step 4: Publish Release
+  - name: "node:16"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Publishing Release..."
+        release-please github-release \
+          --repo-url=https://github.com/inderanz/gcp-terraform-module.git \
+          --token=$GITHUB_TOKEN
+
+substitutions:
+  _BRANCH_NAME: "main"
+  _GITHUB_TOKEN: "<your-github-token>" # Store this securely in Secret Manager
+timeout: "1200s"
