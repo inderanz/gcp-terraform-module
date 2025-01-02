@@ -1,19 +1,4 @@
 steps:
-  # Step 1: Debug Step - Confirm GITHUB_TOKEN is set and used
-  - name: "ubuntu"
-    entrypoint: "bash"
-    secretEnv:
-      - GITHUB_TOKEN
-    args:
-      - "-c"
-      - |
-        echo "Testing GITHUB_TOKEN..."
-        if [ -z "$$GITHUB_TOKEN" ]; then
-          echo "ERROR: GITHUB_TOKEN is not set!"
-          exit 1
-        else
-          echo "SUCCESS: GITHUB_TOKEN is available!"
-        fi
 
   # Step 2: Check out the repository using GITHUB_TOKEN
   - name: "gcr.io/cloud-builders/git"
