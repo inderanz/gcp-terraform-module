@@ -75,3 +75,5 @@ substitutions:
   _REPO_URL: "https://github.com/inderanz/gcp-terraform-module.git"
 
 timeout: "1200s"
+options:
+  logging: CLOUD_LOGGING_ONLY
