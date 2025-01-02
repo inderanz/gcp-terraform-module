@@ -5,7 +5,7 @@ steps:
     args:
       - "-c"
       - |
-        echo "Cloning from GitHub..."
+        echo "Cloning the repository from GitHub..."
         git clone https://github.com/inderanz/gcp-terraform-module.git .
         git checkout $BRANCH_NAME
 
@@ -31,18 +31,7 @@ steps:
           --default-branch=$BRANCH_NAME \
           --token=$GITHUB_TOKEN
 
-  # Step 4: Publish Release
-  - name: "node:16"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        echo "Publishing Release..."
-        release-please github-release \
-          --repo-url=https://github.com/inderanz/gcp-terraform-module.git \
-          --token=$GITHUB_TOKEN
-
 substitutions:
   _BRANCH_NAME: "main"
-  _GITHUB_TOKEN: "<your-github-token>" # Store this securely in Secret Manager
+  _GITHUB_TOKEN: "github-token" # Replace with a GitHub PAT stored securely
 timeout: "1200s"
