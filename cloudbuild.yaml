@@ -46,7 +46,7 @@ steps:
       - |
         echo "Generating Release PR..."
         release-please github-release-pr \
-          --repo-url=$REPO_URL \
+          --repo-url=$$_HEAD_REPO_URL \
           --package-name=gcp-terraform-module \
           --default-branch=$BRANCH_NAME \
           --token=$$GITHUB_TOKEN
