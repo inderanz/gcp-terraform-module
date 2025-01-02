@@ -1,5 +1,5 @@
 steps:
-  # Debug Step: Confirm GITHUB_TOKEN is set
+  # Step 1: Debug Step - Confirm GITHUB_TOKEN is set and used
   - name: "ubuntu"
     entrypoint: "bash"
     secretEnv:
@@ -15,7 +15,7 @@ steps:
           echo "SUCCESS: GITHUB_TOKEN is available!"
         fi
 
-  # Step 1: Check out the repository
+  # Step 2: Check out the repository using GITHUB_TOKEN
   - name: "gcr.io/cloud-builders/git"
     entrypoint: "bash"
     secretEnv:
@@ -27,45 +27,51 @@ steps:
         git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
         git checkout $BRANCH_NAME
 
-  # # Step 2: Install release-please
-  # - name: "node:16"
-  #   entrypoint: "bash"
-  #   args:
-  #     - "-c"
-  #     - |
-  #       echo "Installing release-please..."
-  #       npm install -g release-please
+  # Step 3: Install Node.js and release-please
+  - name: "node:16"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Installing release-please..."
+        npm install -g release-please
 
-  # # Step 3: Generate Release PR
-  # - name: "node:16"
-  #   entrypoint: "bash"
-  #   secretEnv:
-  #     - GITHUB_TOKEN
-  #   args:
-  #     - "-c"
-  #     - |
-  #       echo "Generating Release PR..."
-  #       release-please github-release-pr \
-  #         --repo-url=$REPO_URL \
-  #         --package-name=gcp-terraform-module \
-  #         --default-branch=$BRANCH_NAME \
-  #         --token=$GITHUB_TOKEN
+  # Step 4: Generate Release PR
+  - name: "node:16"
+    entrypoint: "bash"
+    secretEnv:
+      - GITHUB_TOKEN
+    args:
+      - "-c"
+      - |
+        echo "Generating Release PR..."
+        release-please github-release-pr \
+          --repo-url=$REPO_URL \
+          --package-name=gcp-terraform-module \
+          --default-branch=$BRANCH_NAME \
+          --token=$$GITHUB_TOKEN
+
+  # Step 5: Optional - Create GitHub Release
+  - name: "node:16"
+    entrypoint: "bash"
+    secretEnv:
+      - GITHUB_TOKEN
+    args:
+      - "-c"
+      - |
+        echo "Publishing Release..."
+        release-please github-release \
+          --repo-url=$REPO_URL \
+          --token=$$GITHUB_TOKEN
 
 availableSecrets:
   secretManager:
     - versionName: "projects/354449891279/secrets/github-token/versions/latest"
-      env: 'GITHUB_TOKEN'
+      env: "GITHUB_TOKEN"
 
-# substitutions:
-#   _REPO_NAME: "gcp-terraform-module"
-#   _BRANCH_NAME: "main"
-#   _REPO_URL: "https://github.com/inderanz/gcp-terraform-module.git"
-options:
-  logging: GCS_ONLY  # Or CLOUD_LOGGING_ONLY for just Cloud Logging
-steps:
-  - name: "ubuntu"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - echo "Running build step with GCS logging enabled."
-logsBucket: gs://spanner-gke-443910-cloudbuild-logs
+substitutions:
+  _REPO_NAME: "gcp-terraform-module"  # Replace with your repository name
+  _BRANCH_NAME: "main"               # Replace with your default branch
+  _REPO_URL: "https://github.com/inderanz/gcp-terraform-module.git"
+
+timeout: "1200s"
