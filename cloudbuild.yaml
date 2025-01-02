@@ -61,7 +61,7 @@ steps:
       - |
         echo "Publishing Release..."
         release-please github-release \
-          --repo-url=$REPO_URL \
+          --repo-url=$$_HEAD_REPO_URL\
           --token=$$GITHUB_TOKEN
 
 availableSecrets:
@@ -72,7 +72,7 @@ availableSecrets:
 substitutions:
   _REPO_NAME: "gcp-terraform-module"  # Replace with your repository name
   _BRANCH_NAME: "main"               # Replace with your default branch
-  
+
 timeout: "1200s"
 options:
   logging: CLOUD_LOGGING_ONLY
