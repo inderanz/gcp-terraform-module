@@ -34,6 +34,8 @@ steps:
     args:
       - "-c"
       - |
+        echo "Installing release-please again for Step 4..."  # Ensure installation in this step
+        npm install -g release-please  # Install the tool in Step 4 as well
         echo "Generating Release PR..."
         release-please github-release-pr \
           --repo-url=$$_HEAD_REPO_URL \
