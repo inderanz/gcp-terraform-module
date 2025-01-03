@@ -2,11 +2,11 @@ steps:
 
   # Step 2: Check out the repository using GITHUB_TOKEN
   # Step 2: Check out the repository using GITHUB_TOKEN
-- name: "gcr.io/cloud-builders/git"
-  entrypoint: "bash"
-  secretEnv:
+  - name: "gcr.io/cloud-builders/git"
+    entrypoint: "bash"
+    secretEnv:
     - GITHUB_TOKEN
-  args:
+    args:
     - "-c"
     - |
       echo "Cloning from GitHub with authentication..."
