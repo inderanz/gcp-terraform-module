@@ -1,15 +1,19 @@
 steps:
 
   # Step 2: Check out the repository using GITHUB_TOKEN
+  # Step 2: Check out the repository using GITHUB_TOKEN
   - name: "gcr.io/cloud-builders/git"
     entrypoint: "bash"
     secretEnv:
-      - GITHUB_TOKEN
+    - GITHUB_TOKEN
     args:
-      - "-c"
-      - |
-        echo "Cloning from GitHub with authentication..."
-        git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
+    - "-c"
+    - |
+      echo "Cloning from GitHub with authentication..."
+      echo "Using token: $GITHUB_TOKEN"  # Debugging output, should not expose sensitive token in real production.
+      git clone https://$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
+      git checkout main
+
 
   # Step 3: Install Node.js and release-please
   - name: "node:16"
