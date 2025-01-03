@@ -10,7 +10,6 @@ steps:
       - |
         echo "Cloning from GitHub with authentication..."
         git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
-        git checkout main
 
   # Step 3: Install Node.js and release-please
   - name: "node:16"
