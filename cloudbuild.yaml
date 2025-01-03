@@ -11,7 +11,7 @@ steps:
     - |
       echo "Cloning from GitHub with authentication..."
       echo "Using token: $GITHUB_TOKEN"  # Debugging output, should not expose sensitive token in real production.
-      git clone https://$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
+      git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
       git checkout main
 
 
