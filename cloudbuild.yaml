@@ -38,23 +38,12 @@ steps:
         npm install -g release-please  # Install the tool in Step 4 as well
         echo "Generating Release PR..."
         release-please github-release-pr \
-          --repo-url=$$_HEAD_REPO_URL \
+          --repo-url=https://github.com/inderanz/gcp-terraform-module \
           --package-name=gcp-terraform-module \
-          --default-branch=$BRANCH_NAME \
+          --default-branch=main \
           --token=$$GITHUB_TOKEN
 
-  # Step 5: Optional - Create GitHub Release
-  - name: "node:16"
-    entrypoint: "bash"
-    secretEnv:
-      - GITHUB_TOKEN
-    args:
-      - "-c"
-      - |
-        echo "Publishing Release..."
-        release-please github-release \
-          --repo-url=$$_HEAD_REPO_URL\
-          --token=$$GITHUB_TOKEN
+
 
 availableSecrets:
   secretManager:
