@@ -14,16 +14,8 @@ steps:
         git fetch
         git checkout origin/main
 
-  # Step 2: Install Node.js and release-please (install only once)
-  - name: "node:16"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        echo "Installing release-please..."
-        npm install -g release-please
 steps:
-  # Step 3: Generate Release PR and Install release-please
+  # Step 2: Generate Release PR and Install release-please
   - name: "node:16"
     entrypoint: "bash"
     secretEnv:
