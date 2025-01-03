@@ -1,23 +1,20 @@
 steps:
 
-  # Step 2: Check out the repository using GITHUB_TOKEN
-  # Step 2: Check out the repository using GITHUB_TOKEN
+  # Step 1: Check out the repository using GITHUB_TOKEN
   - name: "gcr.io/cloud-builders/git"
     entrypoint: "bash"
     secretEnv:
-    - GITHUB_TOKEN
+      - GITHUB_TOKEN
     args:
-    - "-c"
-    - |
-      echo "Cloning from GitHub with authentication..."
-      echo "Using token: $$GITHUB_TOKEN"  # Debugging output, should not expose sensitive token in real production.
-      git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
-      git remote update
-      git fetch
-      git checkout origin/main
+      - "-c"
+      - |
+        echo "Cloning from GitHub with authentication..."
+        git clone https://$$GITHUB_TOKEN@github.com/inderanz/gcp-terraform-module.git .
+        git remote update
+        git fetch
+        git checkout origin/main
 
-
-  # Step 3: Install Node.js and release-please
+  # Step 2: Install Node.js and release-please (install only once)
   - name: "node:16"
     entrypoint: "bash"
     args:
@@ -25,8 +22,8 @@ steps:
       - |
         echo "Installing release-please..."
         npm install -g release-please
-
-  # Step 4: Generate Release PR
+steps:
+  # Step 3: Generate Release PR and Install release-please
   - name: "node:16"
     entrypoint: "bash"
     secretEnv:
@@ -34,15 +31,14 @@ steps:
     args:
       - "-c"
       - |
-        echo "Installing release-please again for Step 4..."  # Ensure installation in this step
-        npm install -g release-please  # Install the tool in Step 4 as well
+        echo "Installing release-please in Step 4..."
+        npm install -g release-please  # Install release-please in Step 4
         echo "Generating Release PR..."
         release-please github-release-pr \
+          --token=$$GITHUB_TOKEN \
           --repo-url=https://github.com/inderanz/gcp-terraform-module \
           --package-name=gcp-terraform-module \
-          --default-branch=main \
-          --token=$$GITHUB_TOKEN
-
+          --default-branch=main
 
 
 availableSecrets:
@@ -50,11 +46,7 @@ availableSecrets:
     - versionName: "projects/354449891279/secrets/github-token/versions/latest"
       env: "GITHUB_TOKEN"
 
-substitutions:
-  _REPO_NAME: "gcp-terraform-module"  
-  _BRANCH_NAME: "main"               
-  _HEAD_REPO_URL: "https://github.com/inderanz/gcp-terraform-module"
-
 timeout: "1200s"
+
 options:
   logging: CLOUD_LOGGING_ONLY
